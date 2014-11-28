@@ -2,7 +2,6 @@ library forge.gen.tls;
 
 import 'dart:js' as js;
 
-import 'package:js_wrapping_generator/dart_generator.dart';
 import 'package:js_wrapping/js_wrapping.dart' as jsw;
 
 class TlsConnection extends jsw.TypedJsObject {

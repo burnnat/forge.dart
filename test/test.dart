@@ -1,12 +1,8 @@
-import 'package:unittest/unittest.dart';
 import 'package:unittest/html_enhanced_config.dart';
-import 'package:forge/forge.dart';
+
+import 'tls_test.dart' as tls;
 
 void main() {
   useHtmlEnhancedConfiguration();
-
-  group('Test group', () {
-    test('test', () {
-    });
-  });
+  tls.runTests();
 }

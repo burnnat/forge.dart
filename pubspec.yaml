@@ -1,0 +1,11 @@
+name: forge
+description: >
+  Dart wrapper of the Forge library for TLS.
+version: 0.0.1
+author: Nat Burns <nbaccount@burnskids.com>
+dependencies:
+  js_wrapping: any
+  js_wrapping_generator: any
+dev_dependencies:
+  browser: any
+  unittest: any

@@ -5,8 +5,13 @@ import 'dart:js' as js;
 import 'package:js_wrapping_generator/dart_generator.dart';
 import 'package:js_wrapping/js_wrapping.dart' as jsw;
 
+import 'util.dart';
+
 @wrapper
 abstract class TlsConnection extends jsw.TypedJsObject {
+  ByteBuffer get data;
+  ByteBuffer get tlsData;
+
   void reset({ clearFail: true });
 
   void handshake(String sessionId);
@@ -31,4 +36,10 @@ abstract class TlsConnection extends jsw.TypedJsObject {
   }
 
   void close({ clearFail: true });
+}
+
+@wrapper
+abstract class TlsError {
+  String get message;
+  bool get send;
 }

@@ -4,10 +4,15 @@ import 'dart:js' as js;
 
 import 'package:js_wrapping/js_wrapping.dart' as jsw;
 
+import 'util.dart';
+
 class TlsConnection extends jsw.TypedJsObject {
   static TlsConnection $wrap(js.JsObject jsObject) => jsObject == null ? null : new TlsConnection.fromJsObject(jsObject);
   TlsConnection.fromJsObject(js.JsObject jsObject)
       : super.fromJsObject(jsObject);
+  ByteBuffer get data => $unsafe['data'];
+  ByteBuffer get tlsData => $unsafe['tlsData'];
+
   void reset({clearFail: true}) {
     $unsafe.callMethod('reset', [jsw.jsify(clearFail)]);
   }
@@ -38,4 +43,12 @@ class TlsConnection extends jsw.TypedJsObject {
   void close({clearFail: true}) {
     $unsafe.callMethod('close', [jsw.jsify(clearFail)]);
   }
+}
+
+class TlsError extends jsw.TypedJsObject {
+  static TlsError $wrap(js.JsObject jsObject) => jsObject == null ? null : new TlsError.fromJsObject(jsObject);
+  TlsError.fromJsObject(js.JsObject jsObject)
+      : super.fromJsObject(jsObject);
+  String get message => $unsafe['message'];
+  bool get send => $unsafe['send'];
 }

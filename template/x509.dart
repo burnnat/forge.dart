@@ -11,22 +11,33 @@ abstract class Certificate extends jsw.TypedJsObject {
   String serialNumber;
   dynamic publicKey;
 
-  set validity(Validity validity);
   Validity get validity => Validity.$wrap($unsafe['validity']);
+  set validity(Validity validity);
 
+  CertEntity get subject => CertEntity.$wrap($unsafe['subject']);
   void setSubject(List<CertAttribute> attrs, [String uniqueId]);
-  void setIssuer(List<CertAttribute> attrs, [String uniqueId]);
-  void setExtensions(List<Map<String, Object>> extensions);
 
+  CertEntity get issuer => CertEntity.$wrap($unsafe['issuer']);
+  void setIssuer(List<CertAttribute> attrs, [String uniqueId]);
+
+  void setExtensions(List<Map<String, Object>> extensions);
   void sign(dynamic privateKey, [digest]);
 }
 
 @wrapper
-abstract class Validity extends jsw.TypedJsObject {
+abstract class Validity {
   DateTime notBefore;
   DateTime notAfter;
 
   static Validity $wrap(js.JsObject obj) => null;
+}
+
+@wrapper
+abstract class CertEntity {
+  CertAttribute getField(String name);
+  void addField(CertAttribute attr);
+
+  static CertEntity $wrap(js.JsObject obj) => null;
 }
 
 @wrapper

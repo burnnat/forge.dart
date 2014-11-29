@@ -13,19 +13,22 @@ class Certificate extends jsw.TypedJsObject {
   String get serialNumber => $unsafe['serialNumber'];
   set publicKey(dynamic publicKey) => $unsafe['publicKey'] = jsw.jsify(publicKey);
   dynamic get publicKey => $unsafe['publicKey'];
-  set validity(Validity validity) => $unsafe['validity'] = validity == null ? null : validity.$unsafe;
   Validity get validity => Validity.$wrap($unsafe['validity']);
+  set validity(Validity validity) => $unsafe['validity'] = jsw.jsify(validity);
 
+  CertEntity get subject => CertEntity.$wrap($unsafe['subject']);
   void setSubject(List<CertAttribute> attrs, [String uniqueId]) {
     $unsafe.callMethod('setSubject', [jsw.jsify(attrs), uniqueId]);
   }
+
+  CertEntity get issuer => CertEntity.$wrap($unsafe['issuer']);
   void setIssuer(List<CertAttribute> attrs, [String uniqueId]) {
     $unsafe.callMethod('setIssuer', [jsw.jsify(attrs), uniqueId]);
   }
+
   void setExtensions(List<Map<String, Object>> extensions) {
     $unsafe.callMethod('setExtensions', [jsw.jsify(extensions)]);
   }
-
   void sign(dynamic privateKey, [digest]) {
     $unsafe.callMethod('sign', [jsw.jsify(privateKey), jsw.jsify(digest)]);
   }
@@ -39,6 +42,17 @@ class Validity extends jsw.TypedJsObject {
   DateTime get notBefore => $unsafe['notBefore'];
   set notAfter(DateTime notAfter) => $unsafe['notAfter'] = notAfter;
   DateTime get notAfter => $unsafe['notAfter'];
+}
+
+class CertEntity extends jsw.TypedJsObject {
+  static CertEntity $wrap(js.JsObject jsObject) => jsObject == null ? null : new CertEntity.fromJsObject(jsObject);
+  CertEntity.fromJsObject(js.JsObject jsObject)
+      : super.fromJsObject(jsObject);
+  CertAttribute getField(String name) => CertAttribute.$wrap($unsafe.callMethod('getField', [name]));
+  void addField(CertAttribute attr) {
+    $unsafe.callMethod('addField', [attr == null ? null : attr.$unsafe]);
+  }
+
 }
 
 class CertAttribute extends jsw.TypedJsObject {

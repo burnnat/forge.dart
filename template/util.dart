@@ -10,4 +10,6 @@ abstract class ByteBuffer {
   int length();
   bool isEmpty();
   String getBytes([int count]);
+
+  static ByteBuffer $wrap(js.JsObject obj) => null;
 }

@@ -9,8 +9,9 @@ import 'util.dart';
 
 @wrapper
 abstract class TlsConnection extends jsw.TypedJsObject {
-  ByteBuffer get data;
-  ByteBuffer get tlsData;
+
+  ByteBuffer get data => ByteBuffer.$wrap($unsafe['data']);
+  ByteBuffer get tlsData => ByteBuffer.$wrap($unsafe['tlsData']);
 
   void reset({ clearFail: true });
 

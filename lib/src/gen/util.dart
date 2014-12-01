@@ -11,4 +11,5 @@ class ByteBuffer extends jsw.TypedJsObject {
   int length() => $unsafe.callMethod('length');
   bool isEmpty() => $unsafe.callMethod('isEmpty');
   String getBytes([int count]) => $unsafe.callMethod('getBytes', [count]);
+
 }

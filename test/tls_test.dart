@@ -82,26 +82,59 @@ String certPem(Certificate cert) {
   return pem;
 }
 
-class ClientHandler extends TlsHandler {
+abstract class TestHandler extends TlsHandler {
 
+  final String hostname;
   final String certPem;
   final String keyPem;
 
-  TlsConnection server;
+  TestHandler(this.hostname, this.certPem, this.keyPem);
 
-  ClientHandler(this.certPem, this.keyPem);
+  void log(String message) {
+    logMessage('${hostname} :: ${message}');
+  }
 
   bool verify(TlsConnection c, bool verified, int depth, List<Certificate> certs) {
     String cn = certs.first.subject.getField('CN').value;
 
-    logMessage('TLS Client verifying certificate w/CN: "$cn"');
-    logMessage('Verified: $verified...');
+    log('Verifying certificate w/CN: "$cn"');
+    log('Verified: $verified...');
 
     return verified;
   }
 
+  String getCertificate(TlsConnection c, Object hint) {
+    log('Getting certificate...');
+    return certPem;
+  }
+
+  String getPrivateKey(TlsConnection c, Certificate cert) {
+    return keyPem;
+  }
+
+  void heartbeatReceived(TlsConnection c, ByteBuffer payload) {
+    log('Received heartbeat: ${payload.getBytes()}');
+  }
+
+  void closed(TlsConnection c) {
+    log('Disconnected.');
+  }
+
+  void error(TlsConnection c, TlsError error) {
+    log('Error: ${error.message}');
+    fail('Encountered error in ${hostname}: ${error.message}');
+  }
+}
+
+class ClientHandler extends TestHandler {
+
+  TlsConnection server;
+
+  ClientHandler(String certPem, String keyPem)
+    : super('client', certPem, keyPem);
+
   void connected(TlsConnection c) {
-    logMessage('Client connected...');
+    log('Connected...');
 
     new Future.delayed(
       const Duration(milliseconds: 10),
@@ -112,41 +145,40 @@ class ClientHandler extends TlsHandler {
     );
   }
 
-  String getCertificate(TlsConnection c, Object hint) {
-    logMessage('Client getting certificate...');
-    return certPem;
-  }
-
-  String getPrivateKey(TlsConnection c, Certificate cert) {
-    return keyPem;
-  }
-
   void tlsDataReady(TlsConnection c) {
     server.process(c.tlsData.getBytes());
   }
 
   void dataReady(TlsConnection c) {
     var response = c.data.getBytes();
-    logMessage('Client received "$response"');
+    log('Received "$response"');
     expect(response, equals('Hello Client'));
     c.close();
   }
+}
 
-  void heartbeatReceived(TlsConnection c, ByteBuffer payload) {
-    logMessage('Client received heartbeat: ${payload.getBytes()}');
+class ServerHandler extends TestHandler {
+
+  TlsConnection client;
+
+  ServerHandler(String certPem, String keyPem)
+    : super('server', certPem, keyPem);
+
+  void connected(TlsConnection c) {
+    log('Connected...');
+    c.prepareHeartbeatRequest('heartbeat');
   }
 
-  void closed(TlsConnection c) {
-    logMessage('Client disconnected.');
+  void tlsDataReady(TlsConnection c) {
+    client.process(c.tlsData.getBytes());
   }
 
-  void error(TlsConnection c, TlsError error) {
-    logMessage('Client error: ${error.message}');
+  void dataReady(TlsConnection c) {
+    var response = c.data.getBytes();
+    log('Received "$response"');
+    c.prepare('Hello Client');
+    c.close();
   }
-
-  String getSignature() => '';
-  String deflate() => '';
-  String inflate() => '';
 }
 
 void runTests() {
@@ -165,9 +197,17 @@ void runTests() {
       KeyPair clientKeys = createKeys(clientCn);
       Certificate clientCert = createCert(clientKeys, clientCn);
 
-      TlsHandler clientHandler = new ClientHandler(
-        certPem(clientCert),
-        keyPem(clientKeys)
+      String clientKeyPem = keyPem(clientKeys);
+      String clientCertPem = certPem(clientCert);
+
+      ClientHandler clientHandler = new ClientHandler(
+        clientCertPem,
+        clientKeyPem
+      );
+
+      ServerHandler serverHandler = new ServerHandler(
+        serverCertPem,
+        serverKeyPem
       );
 
       TlsConnection client, server;
@@ -182,6 +222,23 @@ void runTests() {
         ],
         virtualHost: 'server'
       );
+
+      server = tls.createConnection(
+        serverHandler,
+        server: true,
+        caStore: [clientCertPem],
+        sessionCache: {},
+        cipherSuites: [
+          CipherSuites.TLS_RSA_WITH_AES_128_CBC_SHA,
+          CipherSuites.TLS_RSA_WITH_AES_256_CBC_SHA
+        ],
+        verifyClient: true
+      );
+
+      clientHandler.server = server;
+      serverHandler.client = client;
+
+      client.handshake(null);
     });
   });
 }

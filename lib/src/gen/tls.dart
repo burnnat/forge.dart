@@ -10,8 +10,9 @@ class TlsConnection extends jsw.TypedJsObject {
   static TlsConnection $wrap(js.JsObject jsObject) => jsObject == null ? null : new TlsConnection.fromJsObject(jsObject);
   TlsConnection.fromJsObject(js.JsObject jsObject)
       : super.fromJsObject(jsObject);
-  ByteBuffer get data => $unsafe['data'];
-  ByteBuffer get tlsData => $unsafe['tlsData'];
+
+  ByteBuffer get data => ByteBuffer.$wrap($unsafe['data']);
+  ByteBuffer get tlsData => ByteBuffer.$wrap($unsafe['tlsData']);
 
   void reset({clearFail: true}) {
     $unsafe.callMethod('reset', [jsw.jsify(clearFail)]);

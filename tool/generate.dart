@@ -6,15 +6,16 @@ import 'package:path/path.dart' as path;
 void main(List<String> args) {
   bool clean = true;
 
-  Directory template = new Directory('template');
-  Directory target = new Directory('lib/src/gen');
+  Directory base = new File.fromUri(Platform.script).parent.parent;
+  Directory template = new Directory('${base.path}/template');
+  Directory target = new Directory('${base.path}/lib/src/gen');
 
   if (clean && target.existsSync()) {
     print('Cleaning output directory...');
     target.deleteSync(recursive: true);
   }
 
-  Generator _generator = new CustomGenerator('packages');
+  Generator _generator = new CustomGenerator('${base.path}/packages');
 
   template
     .listSync()
@@ -42,3 +43,4 @@ class CustomGenerator extends Generator {
     output.writeAsStringSync(code);
   }
 }
+

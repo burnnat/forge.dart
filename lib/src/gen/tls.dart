@@ -36,7 +36,7 @@ class TlsConnection extends jsw.TypedJsObject {
     }
 
     return $unsafe.callMethod(
-    'handshake',
+    'prepareHeartbeatRequest',
     new List.from(args.map((obj) => jsw.jsify(obj)))
     );
   }

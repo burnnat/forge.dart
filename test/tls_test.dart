@@ -6,9 +6,10 @@ import 'package:unittest/unittest.dart';
 import 'package:forge/forge.dart';
 
 KeyPair createKeys(String cn) {
-  logMessage('Generating 512-bit keypair for "$cn"...');
+  int bits = 32;
+  logMessage('Generating $bits-bit keypair for "$cn"...');
 
-  KeyPair keys = pki.rsa.generateKeyPair(bits: 512);
+  KeyPair keys = pki.rsa.generateKeyPair(bits: bits);
   expect(keys, isNotNull);
 
   logMessage('Key pair generated.');
@@ -84,11 +85,18 @@ String certPem(Certificate cert) {
 
 abstract class TestHandler extends TlsHandler {
 
+  final String heartbeatData = 'heartbeat_data';
+  final String clientData = 'Hello Server!';
+  final String serverData = 'Hello Client!';
+
   final String hostname;
   final String certPem;
   final String keyPem;
 
-  TestHandler(this.hostname, this.certPem, this.keyPem);
+  final Function callback;
+
+  TestHandler(this.hostname, this.certPem, this.keyPem)
+    : callback = expectAsync((){});
 
   void log(String message) {
     logMessage('${hostname} :: ${message}');
@@ -97,8 +105,10 @@ abstract class TestHandler extends TlsHandler {
   bool verify(TlsConnection c, bool verified, int depth, List<Certificate> certs) {
     String cn = certs.first.subject.getField('CN').value;
 
-    log('Verifying certificate w/CN: "$cn"');
-    log('Verified: $verified...');
+    log('Verifying certificate for CN: "$cn"');
+    log('Verified: $verified');
+
+    expect(verified, isTrue);
 
     return verified;
   }
@@ -109,15 +119,19 @@ abstract class TestHandler extends TlsHandler {
   }
 
   String getPrivateKey(TlsConnection c, Certificate cert) {
+    log('Getting key...');
     return keyPem;
   }
 
   void heartbeatReceived(TlsConnection c, ByteBuffer payload) {
-    log('Received heartbeat: ${payload.getBytes()}');
+    String data = payload.getBytes();
+    log('Received heartbeat: $data');
+    expect(data, equals(heartbeatData));
   }
 
   void closed(TlsConnection c) {
     log('Disconnected.');
+    callback();
   }
 
   void error(TlsConnection c, TlsError error) {
@@ -137,10 +151,10 @@ class ClientHandler extends TestHandler {
     log('Connected...');
 
     new Future.delayed(
-      const Duration(milliseconds: 10),
+      const Duration(milliseconds: 100),
       () {
-        c.prepareHeartbeatRequest('heartbeat');
-        c.prepare('Hello Server');
+        c.prepareHeartbeatRequest(heartbeatData);
+        c.prepare(clientData);
       }
     );
   }
@@ -150,9 +164,11 @@ class ClientHandler extends TestHandler {
   }
 
   void dataReady(TlsConnection c) {
-    var response = c.data.getBytes();
+    String response = c.data.getBytes();
+
     log('Received "$response"');
-    expect(response, equals('Hello Client'));
+    expect(response, equals(serverData));
+
     c.close();
   }
 }
@@ -166,7 +182,7 @@ class ServerHandler extends TestHandler {
 
   void connected(TlsConnection c) {
     log('Connected...');
-    c.prepareHeartbeatRequest('heartbeat');
+    c.prepareHeartbeatRequest(heartbeatData);
   }
 
   void tlsDataReady(TlsConnection c) {
@@ -175,8 +191,10 @@ class ServerHandler extends TestHandler {
 
   void dataReady(TlsConnection c) {
     var response = c.data.getBytes();
+
     log('Received "$response"');
-    c.prepare('Hello Client');
+    c.prepare(serverData);
+
     c.close();
   }
 }
@@ -227,7 +245,6 @@ void runTests() {
         serverHandler,
         server: true,
         caStore: [clientCertPem],
-        sessionCache: {},
         cipherSuites: [
           CipherSuites.TLS_RSA_WITH_AES_128_CBC_SHA,
           CipherSuites.TLS_RSA_WITH_AES_256_CBC_SHA

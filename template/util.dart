@@ -9,7 +9,9 @@ import 'package:js_wrapping/js_wrapping.dart' as jsw;
 abstract class ByteBuffer {
   int length();
   bool isEmpty();
+
   String getBytes([int count]);
+  String toHex();
 
   static ByteBuffer $wrap(js.JsObject obj) => null;
 }

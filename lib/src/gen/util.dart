@@ -10,6 +10,8 @@ class ByteBuffer extends jsw.TypedJsObject {
       : super.fromJsObject(jsObject);
   int length() => $unsafe.callMethod('length');
   bool isEmpty() => $unsafe.callMethod('isEmpty');
+
   String getBytes([int count]) => $unsafe.callMethod('getBytes', [count]);
+  String toHex() => $unsafe.callMethod('toHex');
 
 }

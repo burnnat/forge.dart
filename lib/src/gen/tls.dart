@@ -14,6 +14,8 @@ class TlsConnection extends jsw.TypedJsObject {
   ByteBuffer get data => ByteBuffer.$wrap($unsafe['data']);
   ByteBuffer get tlsData => ByteBuffer.$wrap($unsafe['tlsData']);
 
+  bool get open => $unsafe['open'];
+
   void reset({clearFail: true}) {
     $unsafe.callMethod('reset', [jsw.jsify(clearFail)]);
   }

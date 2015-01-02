@@ -19,6 +19,7 @@ class DataSet {
 }
 
 void runTests() {
+  DigestAlgorithm md5 = md.md5;
   DigestAlgorithm sha1 = md.sha1;
   DigestAlgorithm sha256 = md.sha256;
   DigestAlgorithm sha384 = md.sha384;
@@ -39,6 +40,13 @@ void runTests() {
   );
 
   Map<DigestAlgorithm, Map<DataSet, String>> cases = {};
+
+  cases[md5] = {};
+  cases[md5][empty] = 'd41d8cd98f00b204e9800998ecf8427e';
+  cases[md5][abc] = '900150983cd24fb0d6963f7d28e17f72';
+  cases[md5][fox] = '9e107d9d372bb6826bd81d3542a419d6';
+  cases[md5][utf8] = '8ef7c2941d78fe89f31e614437c9db59';
+  cases[md5][smallcont] = '78eebfd9d42958e3f31244f116ab7bbe';
 
   cases[sha1] = {};
   cases[sha1][empty] = 'da39a3ee5e6b4b0d3255bfef95601890afd80709';

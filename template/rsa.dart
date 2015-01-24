@@ -6,9 +6,9 @@ import 'package:js_wrapping_generator/dart_generator.dart';
 import 'package:js_wrapping/js_wrapping.dart' as jsw;
 
 @wrapper
-abstract class KeyPair {
-  PrivateKey privateKey;
-  PublicKey publicKey;
+abstract class KeyPair extends jsw.TypedJsObject {
+  PrivateKey get privateKey => PrivateKey.$wrap($unsafe['privateKey']);
+  PublicKey get publicKey => PublicKey.$wrap($unsafe['publicKey']);
 }
 
 @wrapper
@@ -21,6 +21,8 @@ abstract class PrivateKey {
   String sign(Object digest, {
     String scheme: 'RSASSA-PKCS1-V1_5'
   });
+
+  static PrivateKey $wrap(js.JsObject obj) => null;
 }
 
 @wrapper
@@ -35,4 +37,6 @@ abstract class PublicKey {
     String signature,
     { String scheme: 'RSASSA-PKCS1-V1_5' }
   );
+
+  static PublicKey $wrap(js.JsObject obj) => null;
 }

@@ -22,7 +22,7 @@ void main(List<String> args) {
     target.deleteSync(recursive: true);
   }
 
-  Generator _generator = new CustomGenerator('${base.path}/packages');
+  Generator _generator = new Generator('${base.path}/packages');
 
   template
     .list()
@@ -31,6 +31,7 @@ void main(List<String> args) {
       print('Parsing file: ${file.path}');
       return new Future.microtask(() {
         _generator.transformFile(file, file, target);
+        print('Generated file: ${path.join(target.path, path.basename(file.path))}');
       });
     })
     .toList()
@@ -38,30 +39,4 @@ void main(List<String> args) {
     .then((_) {
       print('File generation complete. Elapsed time: ${stopwatch.elapsed}');
     });
-}
-
-class CustomGenerator extends Generator {
-  CustomGenerator(String packagesDir) : super(packagesDir);
-
-  void transformFile(File libraryFile, File from, Directory to) {
-    super.transformFile(libraryFile, from, to);
-
-    File output = new File(path.join(to.path, path.basename(from.path)));
-    String code = output.readAsStringSync();
-
-    code = code.replaceFirst(
-      new RegExp("import 'package:js_wrapping_generator/dart_generator.dart';\n"),
-      ''
-    );
-
-    if (Platform.isWindows) {
-      code = code.replaceAll(
-          new RegExp('\n'),
-          '\r\n'
-      );
-    }
-
-    output.writeAsStringSync(code);
-    print('Generated file: ${output.path}');
-  }
 }

@@ -5,7 +5,9 @@ version: 0.0.1
 author: Nat Burns <nbaccount@burnskids.com>
 dependencies:
   js_wrapping: any
-  js_wrapping_generator: any
+  quiver: any
 dev_dependencies:
   browser: any
+  js_wrapping_generator:
+    path: ../dart-js-wrapping-generator
   unittest: any

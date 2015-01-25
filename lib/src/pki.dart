@@ -29,9 +29,15 @@ class ForgePki {
   String privateKeyToPem(pki_rsa.PrivateKey key, [int maxline = 64])
     => _pki().callMethod('privateKeyToPem', [jsw.jsify(key), maxline]);
 
-  Certificate certificateFromPem(String pem, { bool computeHash: false, bool strict: true })
-    => _pki().callMethod('certificateFromPem', [pem, computeHash, strict]);
+  Certificate certificateFromPem(String pem, { bool computeHash: false, bool strict: true }) {
+    return Certificate.$wrap(
+      _pki().callMethod('certificateFromPem', [pem, computeHash, strict])
+    );
+  }
 
-  pki_rsa.PrivateKey privateKeyFromPem(String pem)
-    => _pki().callMethod('privateKeyFromPem', [pem]);
+  pki_rsa.PrivateKey privateKeyFromPem(String pem) {
+    return pki_rsa.PrivateKey.$wrap(
+      _pki().callMethod('privateKeyFromPem', [pem])
+    );
+  }
 }

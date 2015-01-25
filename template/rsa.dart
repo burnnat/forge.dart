@@ -1,14 +1,15 @@
 library forge.gen.rsa;
 
-import 'dart:js' as js;
+import 'jsbn.dart';
+import 'package:quiver/collection.dart';
+import 'package:quiver/core.dart';
 
 import 'package:js_wrapping_generator/dart_generator.dart';
-import 'package:js_wrapping/js_wrapping.dart' as jsw;
 
 @wrapper
-abstract class KeyPair extends jsw.TypedJsObject {
-  PrivateKey get privateKey => PrivateKey.$wrap($unsafe['privateKey']);
-  PublicKey get publicKey => PublicKey.$wrap($unsafe['publicKey']);
+abstract class KeyPair {
+  PrivateKey get privateKey;
+  PublicKey get publicKey;
 }
 
 @wrapper
@@ -22,7 +23,19 @@ abstract class PrivateKey {
     String scheme: 'RSASSA-PKCS1-V1_5'
   });
 
-  static PrivateKey $wrap(js.JsObject obj) => null;
+  BigInteger get n;
+  BigInteger get e;
+  BigInteger get d;
+  BigInteger get p;
+  BigInteger get q;
+  BigInteger get dP;
+  BigInteger get dQ;
+  BigInteger get qInv;
+
+  List<BigInteger> get _components => [n, e, d, p, q, dP, dQ, qInv];
+
+  bool operator ==(o) => o is PrivateKey && listsEqual(_components, o._components);
+  int get hashCode => hashObjects(_components);
 }
 
 @wrapper
@@ -38,5 +51,9 @@ abstract class PublicKey {
     { String scheme: 'RSASSA-PKCS1-V1_5' }
   );
 
-  static PublicKey $wrap(js.JsObject obj) => null;
+  BigInteger get n;
+  BigInteger get e;
+
+  bool operator ==(o) => o is PublicKey && n == o.n && e == o.e;
+  int get hashCode => hash2(n, e);
 }

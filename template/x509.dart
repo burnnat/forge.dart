@@ -1,23 +1,23 @@
 library forge.gen.x509;
 
-import 'dart:js' as js;
+import 'rsa.dart';
 
 import 'package:js_wrapping_generator/dart_generator.dart';
 import 'package:js_wrapping/js_wrapping.dart' as jsw;
 
 @wrapper
-abstract class Certificate extends jsw.TypedJsObject {
+abstract class Certificate {
   int get version;
   String serialNumber;
-  dynamic publicKey;
+  PublicKey publicKey;
 
-  Validity get validity => Validity.$wrap($unsafe['validity']);
+  Validity get validity;
   set validity(Validity validity);
 
-  CertEntity get subject => CertEntity.$wrap($unsafe['subject']);
+  CertEntity get subject;
   void setSubject(List<CertAttribute> attrs, [String uniqueId]);
 
-  CertEntity get issuer => CertEntity.$wrap($unsafe['issuer']);
+  CertEntity get issuer;
   void setIssuer(List<CertAttribute> attrs, [String uniqueId]);
 
   void setExtensions(List<Map<String, Object>> extensions);
@@ -28,16 +28,12 @@ abstract class Certificate extends jsw.TypedJsObject {
 abstract class Validity {
   DateTime notBefore;
   DateTime notAfter;
-
-  static Validity $wrap(js.JsObject obj) => null;
 }
 
 @wrapper
 abstract class CertEntity {
   CertAttribute getField(String name);
   void addField(CertAttribute attr);
-
-  static CertEntity $wrap(js.JsObject obj) => null;
 }
 
 @wrapper

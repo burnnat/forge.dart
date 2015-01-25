@@ -1,15 +1,15 @@
 library forge.gen.tls;
 
-import 'dart:js' as js;
-
 import 'package:js_wrapping/js_wrapping.dart' as jsw;
 
 import 'util.dart';
+import 'dart:js' as js;
 
 class TlsConnection extends jsw.TypedJsObject {
-  static TlsConnection $wrap(js.JsObject jsObject) => jsObject == null ? null : new TlsConnection.fromJsObject(jsObject);
-  TlsConnection.fromJsObject(js.JsObject jsObject)
-      : super.fromJsObject(jsObject);
+  static TlsConnection $wrap(js.JsObject jsObject) => jsObject == null ? null :
+      new TlsConnection.fromJsObject(jsObject);
+  TlsConnection.fromJsObject(js.JsObject jsObject) : super.fromJsObject(jsObject
+      );
 
   ByteBuffer get data => ByteBuffer.$wrap($unsafe['data']);
   ByteBuffer get tlsData => ByteBuffer.$wrap($unsafe['tlsData']);
@@ -37,10 +37,8 @@ class TlsConnection extends jsw.TypedJsObject {
       args.add(payloadLength);
     }
 
-    return $unsafe.callMethod(
-    'prepareHeartbeatRequest',
-    new List.from(args.map((obj) => jsw.jsify(obj)))
-    );
+    return $unsafe.callMethod('prepareHeartbeatRequest', new List.from(args.map(
+        (obj) => jsw.jsify(obj))));
   }
 
   void close({clearFail: true}) {
@@ -49,9 +47,9 @@ class TlsConnection extends jsw.TypedJsObject {
 }
 
 class TlsError extends jsw.TypedJsObject {
-  static TlsError $wrap(js.JsObject jsObject) => jsObject == null ? null : new TlsError.fromJsObject(jsObject);
-  TlsError.fromJsObject(js.JsObject jsObject)
-      : super.fromJsObject(jsObject);
+  static TlsError $wrap(js.JsObject jsObject) => jsObject == null ? null :
+      new TlsError.fromJsObject(jsObject);
+  TlsError.fromJsObject(js.JsObject jsObject) : super.fromJsObject(jsObject);
   String get message => $unsafe['message'];
   bool get send => $unsafe['send'];
 }

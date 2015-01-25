@@ -1,7 +1,5 @@
 library forge.gen.tls;
 
-import 'dart:js' as js;
-
 import 'package:js_wrapping_generator/dart_generator.dart';
 import 'package:js_wrapping/js_wrapping.dart' as jsw;
 
@@ -10,10 +8,10 @@ import 'util.dart';
 @wrapper
 abstract class TlsConnection extends jsw.TypedJsObject {
 
-  ByteBuffer get data => ByteBuffer.$wrap($unsafe['data']);
-  ByteBuffer get tlsData => ByteBuffer.$wrap($unsafe['tlsData']);
+  ByteBuffer get data;
+  ByteBuffer get tlsData;
 
-  bool get open => $unsafe['open'];
+  bool get open;
 
   void reset({ clearFail: true });
 

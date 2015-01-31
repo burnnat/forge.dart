@@ -1,4 +1,4 @@
-library forge.pki;
+library forge.asn1;
 
 import 'dart:js';
 import 'package:js_wrapping/js_wrapping.dart' as jsw;

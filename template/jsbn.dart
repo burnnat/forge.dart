@@ -1,4 +1,4 @@
-library forge.gen.aes_suites;
+library forge.gen.jsbn;
 
 import 'package:quiver/core.dart';
 

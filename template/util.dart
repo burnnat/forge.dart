@@ -21,4 +21,6 @@ abstract class ByteBuffer {
 
   String getBytes([int count]);
   String toHex();
+
+  int getByte();
 }

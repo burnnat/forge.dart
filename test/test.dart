@@ -7,6 +7,7 @@ import 'package:unittest/src/utils.dart';
 import 'md_test.dart' as md;
 import 'pem_test.dart' as pem;
 import 'tls_test.dart' as tls;
+import 'util_test.dart' as util;
 
 void main() {
   unittestConfiguration = new LoggingHtmlEnhancedConfiguration();
@@ -14,6 +15,7 @@ void main() {
   md.runTests();
   pem.runTests();
   tls.runTests();
+  util.runTests();
 }
 
 class LoggingHtmlEnhancedConfiguration extends HtmlEnhancedConfiguration {

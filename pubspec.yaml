@@ -3,6 +3,8 @@ description: >
   Dart wrapper of the Forge library for TLS.
 version: 0.0.1
 author: Nat Burns <nbaccount@burnskids.com>
+homepage: https://github.com/burnnat/forge.dart
+documentation:
 dependencies:
   js_wrapping: any
   quiver: any

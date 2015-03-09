@@ -4,7 +4,7 @@ set -e
 DIR=$( cd $( dirname "${BASH_SOURCE[0]}" ) && pwd )
 BROWSER_TEST_FILE=$DIR/test.html
 
-DUMP=$(DumpRenderTree $BROWSER_TEST_FILE)
+DUMP=$(content_shell --args --dump-render-tree $BROWSER_TEST_FILE)
 echo "$DUMP"
 
 REGEX="All [0-9]+ tests pass"

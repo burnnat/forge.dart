@@ -9,5 +9,5 @@ dependencies:
 dev_dependencies:
   browser: any
   js_wrapping_generator:
-    path: ../dart-js-wrapping-generator
+    git: git://github.com/burnnat/dart-js-wrapping-generator.git
   unittest: any

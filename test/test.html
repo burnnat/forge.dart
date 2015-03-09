@@ -8,24 +8,6 @@
     <script src="../packages/forge/js/forge.bundle.js"></script>
     <script type="application/dart" src="test.dart"></script>
     <script src="../packages/browser/dart.js"></script>
-    <script>
-      // Setup DumpRenderTree hooks if needed 
-      if (window.testRunner) {
-        testRunner.dumpAsText();
-        testRunner.waitUntilDone();
-        window.addEventListener('message', receiveMessage, false);
-        window.addEventListener('error', onError);
-      }
-      
-      function onError(event) {
-        testRunner.notifyDone();
-      }
-      
-      function receiveMessage(event) {
-        if (event.data == 'unittest-suite-done') {
-          testRunner.notifyDone();
-        }
-      }
-    </script>
+    <script src="../packages/unittest/test_controller.js"></script>
   </body>
 </html>

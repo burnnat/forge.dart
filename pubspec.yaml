@@ -6,10 +6,12 @@ author: Nat Burns <nbaccount@burnskids.com>
 homepage: https://github.com/burnnat/forge.dart
 documentation:
 dependencies:
-  js_wrapping: any
-  quiver: any
+  js_wrapping: ^0.1.2
+  quiver: ^0.21.3
 dev_dependencies:
   browser: any
   js_wrapping_generator:
     git: git://github.com/burnnat/dart-js-wrapping-generator.git
   unittest: any
+environment:
+  sdk: '>=1.8.3 <2.0.0'

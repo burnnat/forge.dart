@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 which content_shell
 if [[ $? -ne 0 ]]; then
